@@ -19,3 +19,11 @@ int main(){
     std::cout<<std::endl<<"i = "<<i<<"\t k = "<<k;
     return 0;
 }
+
+// #include <iostream>
+// int main(){
+//     char *p[3] = {"hello","world","!"};
+//     std::cout<<p[0][12]<<"\t"<<p[1]<<"\t"<<p[2]<<std::endl;
+//     return 0;
+// }
+

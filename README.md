@@ -165,7 +165,7 @@ main()函数同C语言，参见[C语言函数](https://github.com/nullnamelessne
 
 #include <<mark>string</mark>>
 
-C++语言的基本类型系统中没有字符串类型，但在其标准模板库(STL)中提供了字符串类型————string
+C++语言的基本类型系统中没有字符串类型，但在其标准模板库(STL)中提供了字符串类型————string，需要注意的是，<mark>string类型的对象不需要NULL字符结尾</mark>
 
 * string对象的定义和初始化
 ```cpp
@@ -176,8 +176,21 @@ string s[10];                       //定义字符串数组s，相当于char[10]
 string s(5,'c');                    //定义字符串s，用5个'c'，即"ccccc"初始化
 ```
 
-* string类型的运算
+* string类型的运算  
 string类型可以直接使用`=`、`+`、`+=`、`>`、`>=`、`==`、`<`、`<=`、`!=`运算，结果类似C语言的str类函数
+* 成员函数`str.c_str()`可以返回char指针
+* 成员函数`str.assign(C_str,n)`将C语言风格字符串`C_str`开始的n个字符赋值给`str`
+* 成员函数`str.at(int n)`或直接使用`str[n]`引用string类型对象的第n个字符
+* 成员函数`str.size()`、`str.length()`可以返回字符串长度
+* 成员函数`str.empty()`可以检查字符串是否为空字符串
+* 成员函数`str.substr(int m,int n)`可以返回从下标m开始的n个字符的字符串
+* 成员函数`str.find(char *s,pos)`从pos开始查找字符串`s`在`str`中的位置
+* 成员函数`str.erase(int m,int n)`从下标m开始往后删除n个字符
+* 成员函数`str.append(char *s,int m,int n)`在`str`末尾增加字符串`s`从下标m开始的n个字符
+* 成员函数`str.replace(char c,int m,char *s,int n)`删除从c开始的m个字符，然后在c处插入字符串`s`的前n个字符
+* 成员函数`str.replace(char c,int m,char *s,pos,int n)`删除从c开始的m个字符，然后在c处插入字符串`s`从pos开始的前n个字符
+* 成员函数`str.insert(char c,char *s,int n)`在c位置插入字符串`s`的前n个字符
+* 成员函数`str.insert(char c,char *s,pos,int n)`在c位置插入字符串`s`从pos开始的前n个字符
 
 #### 数据输入输出的经典问题
 
@@ -473,7 +486,11 @@ unique_ptr<int>p3 = make_unique<int>123;            //C++ 14
 
 >高效率智能指针创建函数make_shared()<sup>C++ 11</sup>、make_unique()<sup>C++ 14</sup>
 
+* 共享指针`shared_ptr`有一个成员函数`use_count()`可以用来查看共享指针的计数器
+* 弱指针`weak_ptr`是一个不控制资源生命周期的智能指针，是对对象的一种弱引用，<mark>弱指针并不占有内存，因此没有指针的解引用操作</mark>，且不参与引用计数
+* 可以使用弱指针`weak_ptr`的成员函数`lock()`返回一个临时的`shared_ptr`
 
+### 左值引用与右值引用
 
 ## 预处理
 
@@ -496,4 +513,138 @@ unique_ptr<int>p3 = make_unique<int>123;            //C++ 14
 ### 文件包含
 
 * `#pragma once`表示在编译一个源文件时，只对该文件包含(打开)一次
+
+## 排序算法
+
+### 冒泡排序法(bubble sort)
+
+```cpp
+for(i=0;i<n-1;i++)
+    for(j=0;j<n-1-i;j++)
+        if(a[j]>a[j+1])                 //排序结果从小到大
+            t=a[j],a[j]=a[j+1],a[j+1]=t;
+```
+
+### 选择排序法(selection sort)
+
+```cpp
+for(i=0;i<n-1;i++)
+    for(j=i+1;j<n;j++)
+        if(a[i]<a[j])
+            t=a[i],a[i]=a[j],a[j]=t;
+```
+
+* 高效一点：
+
+```cpp
+for(i=0;i<n-1;i++){
+    k=i;
+    for(j=i+1;j<n;j++>)
+        if(a[k]>a[j])   k=j;
+    if(i!=k)    t=a[i],a[i]=a[k],a[k]=t;
+}
+```
+
+### 插入排序法(insertion sort)
+
+```cpp
+for(i=1;i<n;i++){
+    t=a[i];
+    for(j=i-1;j>0;j--){
+        if(a[j]>t) a[j+1]=a[j];
+        else break;
+    }
+    a[j+1]=t;
+}
+```
+
+### 快速排序法(quick sort)
+
+```cpp
+...
+QuickSort(a,0,n-1);
+...
+void QuickSort(int a[],int left,int right){
+    int i,j,t,index[3];
+    if(left<right){
+        if(right-left+1>3){
+            index[0]=rand()%(right-left+1)+left;
+            do{
+                index[1]=rand()%(right-left+1)+left;
+            }while(index[0]==index[1]);
+            do{
+                index[2]=rand()%(right-left+1)+left;
+            }while(index[0]==index[2]||index[1]==index[2]);
+            if(a[index[0]]>=a[index[1]]&&a[index[1]]>=a[index[2]])
+                t=a[index[1]],a[index[1]]=a[left],a[left]=t;
+            else if(a[index[2]]>=a[index[1]]&&a[index[1]]>=a[index[0]])
+                t=a[index[1]],a[index[1]]=a[left],a[left]=t;
+            else if(a[index[1]]>=a[index[0]]&&a[index[0]]>=a[index[2]])
+                t=a[index[0]],a[index[0]]=a[left],a[left]=t;
+            else if(a[index[2]]>=a[index[0]]&&a[index[0]]>=a[index[1]])
+                t=a[index[0]],a[index[0]]=a[left],a[left]=t;
+            else if(a[index[0]]>=a[index[2]]&&a[index[2]]>=a[index[1]])
+                t=a[index[2]],a[index[2]]=a[left],a[left]=t;
+            else if(a[index[1]]>=a[index[2]]&&a[index[2]]>=a[index[0]])
+                t=a[index[2]],a[index[2]]=a[left],a[left]=t;
+        }
+        i=left+1,j=right;
+        while(1){
+            while(i<=right){
+                if(a[i]>a[left])
+                    break;
+                i++;
+            }
+            while(j>left){
+                if(a[j]<a[left])
+                    break;
+                j--;
+            }
+            if(i>=j) break;
+            t=a[i],a[i]=a[j],a[j]=t;
+        }
+        t=a[left],a[left]=a[j],a[j]=t;
+        QuickSort(a,left,j-1);            //关键数据左半部分递归
+        QuickSort(a,i,right);             //关键数据右半部分递归
+    }
+}
+```
+
+## 引用数据
+
+### 指针
+
+#### 指针的const限定
+
+* 指向const对象的指针
+
+`const type *p`
+
+1. 把一个const对象的地址赋值给一个指向非const对象的指针是错误的
+2. 不能使用void *指针保存const对象的地址，而必须使用const void *
+3. <mark>*允许把非const对象的地址赋值给指向const对象的指针*</mark>
+4. 不能使用指向const对象的指针修改指向的对象，本质上来讲，由于没有方法分辨指向const对象的指针所指的对象是否为const，系统会把它所指向的所有对象都视为const
+5. 不能保证指向const的指针所指的对象的值一定不会被其他方式修改
+
+* const指针
+
+`type * const p`
+
+* 指向const对象的const指针
+
+`const type * const p`
+
+#### 数组指针
+
+`type (*p)[epxr1][expr2]...`
+
+数组指针对应的其实就是数组名退化的形式，即数组最高维消失，变为指针
+
+#### 指针数组
+
+`type *p[exptr1][exptr2]...`
+
+指针数组是由指针组成的数组
+
+#### 指向指针的指针
 
