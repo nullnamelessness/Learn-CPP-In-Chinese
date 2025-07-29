@@ -25,7 +25,7 @@ int main(){
     delete []p;
     return 0;
 }
-void QuickSort(int a[],int left,int right){
+void QuickSort(int *a,int left,int right){
     int i,j,t,index[3];
     if(left<right){
         if(right-left+1>3){
