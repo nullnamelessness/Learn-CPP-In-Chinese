@@ -381,14 +381,14 @@ inline 返回类型 函数名(形式参数列表){
 #### <mark>函数模板</mark>
 
 ```cpp
-tempalte<模板形参表>返回类型 函数名(形式参数列表){
+template<模板形参表>返回类型 函数名(形式参数列表){
     函数体
 }
 ```
 
 * 模板参数列表  
 使用`typename`或`class`(可以混用)+参数类型名(早期C++只允许使用class)  
-eg.`template<type T,class Y>Y func(T a,Y b);`
+eg.`template<typename T,class Y,...>Y func(T a,Y b);`
 
 * 非类型形参(nontype parameter)  
 eg.`template<class T,int N>T func(T a);`  
@@ -992,3 +992,21 @@ class/struct 外围类::嵌套类{
 
 * 由于友元不是授予友元关系(friendship)的那个类的成员，所以它们不受访问标号声明出现部分的访问控制影响，通常，将友元声明成组的放在类定义的开始或结尾
 * 友元的关系不能传递或继承
+
+### 类模板
+
+```cpp
+template <typename T,class Y,...>
+class classname{
+    类体
+};
+template <模板形参表>
+返回类型 类名<类型参数表>::函数名(形式参数列表){
+    函数体
+}
+```
+
+标准C++为模板类提供了关键字`export`，其作用与`extern`相似
+
+## 派生与继承
+
